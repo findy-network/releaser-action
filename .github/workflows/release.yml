@@ -9,7 +9,10 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: master
-      - name: merge
+      - run: |
+          git config --global user.name release-bot
+          git config --global user.email release-bot
+      - name: push
         run: |
           git fetch --tags origin
           latest=$(git describe --tags --abbrev=0 || echo "v0")
