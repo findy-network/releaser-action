@@ -3,6 +3,8 @@
 DEV_BRANCH="dev"
 MAIN_BRANCH="master"
 
+set -e
+
 if [ -f "./package.json" ]; then
   JS_PROJECT="TRUE"
 fi
