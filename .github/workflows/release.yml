@@ -17,5 +17,6 @@ jobs:
           git fetch --tags origin
           latest=$(git describe --tags --abbrev=0 || echo "v0")
           new_version=v$((${latest//v}+1))
+          echo "Releasing new version $new_version"
           git tag -a -m "Release $new_version" $new_version
-          git push --follow-tags
+          git push origin $new_version
