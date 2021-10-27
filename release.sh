@@ -62,11 +62,9 @@ fi
 
 printf "\nDiff between $MAIN_BRANCH and $DEV_BRANCH: $diff\n"
 
-if [ -z "$BADGE" ]; then
-  release $1
-elif [[ $(curl -s $BADGE | grep passing) ]]; then # check if required workflow is passing
-  release $1
-else
+if [[ $(curl -s $BADGE | grep failing) ]]; then # check if required workflow is passing
   printf "\nBuild is not passing. Should not release changes.\n"
   exit 1
 fi
+
+release $1

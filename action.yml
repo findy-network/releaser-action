@@ -5,6 +5,11 @@ inputs:
     description: "Personal access token with repo permission"
     required: true
     default: ""
+  gate:
+    description: "Name of the dev workflow acting as gate - workflow needs to pass for release to happen."
+    required: false
+    default: ""
+
 runs:
   using: "composite"
   steps:
@@ -19,3 +24,5 @@ runs:
       shell: bash
     - run: ${{ github.action_path }}/release.sh
       shell: bash
+      env:
+        BADGE: https://github.com/$GITHUB_REPOSITORY/actions/workflows/${{ inputs.gate }}.yml/badge.svg?branch=dev
