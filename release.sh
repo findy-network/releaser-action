@@ -5,10 +5,6 @@ MAIN_BRANCH="master"
 
 set -e
 
-if [ -f "./package.json" ]; then
-  JS_PROJECT="TRUE"
-fi
-
 release() {
   VERSION_NBR=$(cat VERSION)
   if [ -z "$VERSION_NBR" ]; then
@@ -38,9 +34,8 @@ release() {
     git push origin $DEV_BRANCH --tags
 
     echo $NEW_VERSION >VERSION
-    if [ -n "$JS_PROJECT" ]; then
-      npm --no-git-tag-version version $NEW_VERSION
-    fi
+    # increase npm package version if node projects are found in this or subdirectories
+    find . "$@" -iname 'package.json' -not -path '*/node_modules/*' -execdir npm --no-git-tag-version version $NEW_VERSION \;
     git add VERSION
     git commit -a -m "Start dev for v$NEW_VERSION."
     git push origin $DEV_BRANCH
@@ -50,11 +45,8 @@ release() {
 }
 
 # check if there other changes than version number between main and dev branch
-GREP_STR="VERSION"
 # TODO: detect libs changes from package.json and do release if any
-if [ -n "$JS_PROJECT" ]; then
-  GREP_STR="VERSION\|.*package.*json"
-fi
+GREP_STR="VERSION\|.*package.*json"
 diff="$(git diff origin/$MAIN_BRANCH $DEV_BRANCH --name-only | grep -v $GREP_STR)"
 
 if [ -z "$diff" ]; then
