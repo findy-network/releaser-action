@@ -64,9 +64,19 @@ fi
 
 printf "\nDiff between $MAIN_BRANCH and $DEV_BRANCH: $diff\n"
 
-if [[ $(curl -s $BADGE | grep failing) ]]; then # check if required workflow is passing
-  printf "\nBuild is not passing. Should not release changes.\n"
-  exit 1
-fi
+workflows=`echo "$GATE" | tr ',' ' '`
+
+for workflow in $(echo $workflows)
+do
+  badge=$(curl -s ${WORKFLOW_BADGE/'WORKFLOW_NAME'/"$workflow"})
+  if [[ $(echo $badge | grep failing) ]]; then # check if required workflow is passing
+    printf "\nBuild is not passing. Should not release changes.\n"
+    exit 1
+  fi
+  if [[ $(echo $badge | grep 'Not Found') ]]; then # check if required workflow is found
+    printf "\nBuild is not found. Should not release changes.\n"
+    exit 1
+  fi
+done;
 
 release $1

@@ -6,7 +6,7 @@ inputs:
     required: true
     default: ""
   gate:
-    description: "Name of the dev workflow acting as gate - workflow needs to pass for release to happen."
+    description: "Name of the dev workflow acting as gate - workflow needs to pass for release to happen. Separate multiple workflows with comma."
     required: false
     default: ""
 
@@ -25,4 +25,5 @@ runs:
     - run: ${{ github.action_path }}/release.sh
       shell: bash
       env:
-        BADGE: https://github.com/$GITHUB_REPOSITORY/actions/workflows/${{ inputs.gate }}.yml/badge.svg?branch=dev
+        GATE: ${{ inputs.gate }}
+        WORKFLOW_BADGE: https://github.com/$GITHUB_REPOSITORY/actions/workflows/WORKFLOW_NAME.yml/badge.svg?branch=dev
