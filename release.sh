@@ -44,6 +44,10 @@ release() {
   fi
 }
 
+printf "Checking changes between $MAIN_BRANCH and $DEV_BRANCH."
+printf "Gate workflows are: $GATE"
+printf "Workflow badge template is: $WORKFLOW_BADGE"
+
 # check if there other changes than version number between main and dev branch
 # TODO: detect libs changes from package.json and do release if any
 GREP_STR="VERSION\|.*package.*json"
