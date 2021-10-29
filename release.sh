@@ -44,9 +44,9 @@ release() {
   fi
 }
 
-printf "Checking changes between $MAIN_BRANCH and $DEV_BRANCH."
-printf "Gate workflows are: $GATE"
-printf "Workflow badge template is: $WORKFLOW_BADGE"
+printf "Checking changes between $MAIN_BRANCH and $DEV_BRANCH.\n"
+printf "Gate workflows are: $GATE\n"
+printf "Workflow badge template is: $WORKFLOW_BADGE\n"
 
 set +e # ignore diff return code for now
 
@@ -68,7 +68,9 @@ workflows=$(echo "$GATE" | tr ',' ' ')
 
 for workflow in $workflows
 do
-  badge=$(curl -s ${WORKFLOW_BADGE/'WORKFLOW_NAME'/"$workflow"})
+  badge_url=${WORKFLOW_BADGE/'WORKFLOW_NAME'/"$workflow"}
+  printf "Fetch badge for $workflow from url $badge_url\n"
+  badge=$(curl -s $badge_url)
   if [[ $(echo $badge | grep failing) ]]; then # check if required workflow is passing
     printf "\nBuild is not passing. Should not release changes.\n"
     exit 1
