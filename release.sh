@@ -48,10 +48,14 @@ printf "Checking changes between $MAIN_BRANCH and $DEV_BRANCH."
 printf "Gate workflows are: $GATE"
 printf "Workflow badge template is: $WORKFLOW_BADGE"
 
+set +e # ignore diff return code for now
+
 # check if there other changes than version number between main and dev branch
 # TODO: detect libs changes from package.json and do release if any
 GREP_STR="VERSION\|.*package.*json"
 diff="$(git diff origin/$MAIN_BRANCH $DEV_BRANCH --name-only | grep -v $GREP_STR)"
+
+set -e
 
 if [ -z "$diff" ]; then
   printf "\nNo changes found. No need to release.\n"
@@ -60,9 +64,9 @@ fi
 
 printf "\nDiff between $MAIN_BRANCH and $DEV_BRANCH: $diff\n"
 
-workflows=`echo "$GATE" | tr ',' ' '`
+workflows=$(echo "$GATE" | tr ',' ' ')
 
-for workflow in $(echo $workflows)
+for workflow in $workflows
 do
   badge=$(curl -s ${WORKFLOW_BADGE/'WORKFLOW_NAME'/"$workflow"})
   if [[ $(echo $badge | grep failing) ]]; then # check if required workflow is passing
