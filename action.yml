@@ -26,4 +26,4 @@ runs:
       shell: bash
       env:
         GATE: ${{ inputs.gate }}
-        WORKFLOW_BADGE: https://github.com/$GITHUB_REPOSITORY/actions/workflows/WORKFLOW_NAME.yml/badge.svg?branch=dev
+        WORKFLOW_BADGE: https://github.com/${{ github.repository }}/actions/workflows/WORKFLOW_NAME.yml/badge.svg?branch=dev
