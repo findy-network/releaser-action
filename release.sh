@@ -29,6 +29,12 @@ release() {
   if [ -z "$(git status --porcelain)" ]; then
     git pull origin $DEV_BRANCH
 
+    # if any changes have been pushed directly to main branch,
+    # include them to dev branch as well
+    git fetch origin $MAIN_BRANCH:$MAIN_BRANCH
+    git merge $MAIN_BRANCH
+    git push origin $DEV_BRANCH
+
     VERSION=v$VERSION_NBR
     git tag -a $VERSION -m "Version $VERSION"
     git push origin $DEV_BRANCH --tags
