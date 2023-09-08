@@ -58,7 +58,7 @@ set +e # ignore diff return code for now
 
 # check if there other changes than version number between main and dev branch
 # TODO: detect libs changes from package.json and do release if any
-GREP_STR="VERSION\|.*package.*json"
+GREP_STR="VERSION\|.*package.*json\|.*yarn.*lock"
 diff="$(git diff origin/$MAIN_BRANCH $DEV_BRANCH --name-only | grep -v $GREP_STR)"
 
 set -e
@@ -72,8 +72,7 @@ printf "\nDiff between $MAIN_BRANCH and $DEV_BRANCH: $diff\n"
 
 workflows=$(echo "$GATE" | tr ',' ' ')
 
-for workflow in $workflows
-do
+for workflow in $workflows; do
   badge_url=${WORKFLOW_BADGE/'WORKFLOW_NAME'/"$workflow"}
   printf "Fetch badge for $workflow from url $badge_url\n"
   badge=$(curl -s $badge_url)
@@ -85,6 +84,6 @@ do
     printf "\nBuild is not found. Should not release changes.\n"
     exit 1
   fi
-done;
+done
 
 release $1
