@@ -39,12 +39,16 @@ release() {
     git tag -a $VERSION -m "Version $VERSION"
     git push origin $DEV_BRANCH --tags
 
+    feat_branch="$NEW_VERSION-$(date +%s)"
+    git checkout -b "$feat_branch"
     echo $NEW_VERSION >VERSION
     # increase npm package version if node projects are found in this or subdirectories
     find . "$@" -iname 'package.json' -not -path '*/node_modules/*' -execdir npm --no-git-tag-version version $NEW_VERSION \;
     git add VERSION
     git commit -a -m "Start dev for v$NEW_VERSION."
-    git push origin $DEV_BRANCH
+    git push --set-upstream origin $feat_branch
+    url=$(gh pr create --base $DEV_BRANCH --fill)
+    gh pr merge --auto --merge "$url"
   else
     echo "ERROR: Working directory is not clean, commit or stash changes."
   fi
