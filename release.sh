@@ -39,7 +39,7 @@ release() {
     git tag -a $VERSION -m "Version $VERSION"
     git push origin $DEV_BRANCH --tags
 
-    git checkout -b "$DEV_BRANCH"
+    git checkout "$DEV_BRANCH"
     echo $NEW_VERSION >VERSION
     # increase npm package version if node projects are found in this or subdirectories
     find . "$@" -iname 'package.json' -not -path '*/node_modules/*' -execdir npm --no-git-tag-version version $NEW_VERSION \;
